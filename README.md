@@ -15,5 +15,9 @@
 # php artisan db:seed
 # php artisan make:model Invoice -mc
 # php artisan migrate
-# php artisan make:factory CustomerFactory
+# php artisan make:factory InvoiceFactory
+# php artisan db:seed
+# php artisan make:model InvoiceItem -mc
+# php artisan migrate
+# php artisan make:factory InvoiceItemFactory
 # php artisan db:seed
