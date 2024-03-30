@@ -1,6 +1,6 @@
 # laraval-10-vue
 # composer create laravel/laravel laraval-10-vue
-# php artisan server
+# php artisan serve
 # php artisan make:model Counter -m
 # php artisan migrate
 # php artisan make:factory CounterFactory
@@ -21,3 +21,9 @@
 # php artisan migrate
 # php artisan make:factory InvoiceItemFactory
 # php artisan db:seed
+
+# npm install
+# npm install vue-loader@next vue vue-router@next --force
+# npm install @vitejs/plugin-vue
+
+# npm run dev 
