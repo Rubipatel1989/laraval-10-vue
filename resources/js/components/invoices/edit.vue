@@ -1,0 +1,192 @@
+<script setup>
+import { onMounted, ref } from "vue";
+import { routerKey, useRouter } from "vue-router";
+
+const router = useRouter();
+let form = ref({ id: "" });
+let allcustomers = ref([]);
+let customer_id = ref([]);
+
+const props = defineProps({
+    id: {
+        type: String,
+        default: "",
+    },
+});
+onMounted(async () => {
+    getInvoice();
+    //indexForm();
+    getAllCustomers();
+    deleteInvoiceItem();
+    // SubTotal();
+    // Total();
+});
+
+const getInvoice = async () => {
+    let response = await axios.get(`/api/edit_invoice/${props.id}`);
+    form.value = response.data.invoice;
+    console.log(form.value);
+};
+
+const getAllCustomers = async () => {
+    let response = await axios.get("/api/customers");
+    allcustomers.value = response.data.customers;
+};
+
+const deleteInvoiceItem = (id, i) => {
+    form.value.invoice_items.splice(i, 1);
+    if (id != undefined) {
+        axios.get("/api/delete_invoice_items/" + id);
+    }
+};
+</script>
+<template>
+    <div class="container">
+        <!--==================== EDIT INVOICE ====================-->
+        <div class="invoices">
+            <div class="card__header">
+                <div>
+                    <h2 class="invoice__title">Edit Invoice</h2>
+                </div>
+                <div></div>
+            </div>
+
+            <div class="card__content">
+                <div class="card__content--header">
+                    <div>
+                        <p class="my-1">Customer</p>
+                        <select
+                            name=""
+                            id=""
+                            class="input"
+                            v-model="form.customer_id"
+                        >
+                            <option disabled>Select Customer</option>
+                            <option
+                                :value="customer.id"
+                                v-for="customer in allcustomers"
+                                :key="customer.id"
+                            >
+                                {{ customer.firstname }}
+                            </option>
+                        </select>
+                    </div>
+                    <div>
+                        <p class="my-1">Date</p>
+                        <input
+                            id="date"
+                            placeholder="dd-mm-yyyy"
+                            type="date"
+                            class="input"
+                            v-model="form.date"
+                        />
+                        <!---->
+                        <p class="my-1">Due Date</p>
+                        <input
+                            id="due_date"
+                            type="date"
+                            class="input"
+                            v-model="form.due_date"
+                        />
+                    </div>
+                    <div>
+                        <p class="my-1">Numero</p>
+                        <input
+                            type="text"
+                            class="input"
+                            v-model="form.number"
+                        />
+                        <p class="my-1">Reference(Optional)</p>
+                        <input
+                            type="text"
+                            class="input"
+                            v-model="form.reference"
+                        />
+                    </div>
+                </div>
+                <br /><br />
+                <div class="table">
+                    <div class="table--heading2">
+                        <p>Item Description</p>
+                        <p>Unit Price</p>
+                        <p>Qty</p>
+                        <p>Total</p>
+                        <p></p>
+                    </div>
+
+                    <!-- item 1 -->
+                    <div
+                        class="table--items2"
+                        v-for="(itemcart, i) in form.invoice_items"
+                        :key="itemcart.id"
+                    >
+                        <p v-if="itemcart.product">
+                            #{{ itemcart.product.item_code }}
+                            {{ itemcart.product.description }}
+                        </p>
+                        <p v-else>
+                            {{ itemcart.item_code }} {{ itemcart.description }}
+                        </p>
+                        <p>
+                            <input
+                                type="text"
+                                class="input"
+                                v-model="itemcart.unit_price"
+                            />
+                        </p>
+                        <p>
+                            <input
+                                type="text"
+                                class="input"
+                                v-model="itemcart.quantity"
+                            />
+                        </p>
+                        <p>$ {{ itemcart.unit_price * itemcart.quantity }}</p>
+                        <p
+                            style="color: red; font-size: 24px; cursor: pointer"
+                            @click="deleteInvoiceItem(itemcart.id, i)"
+                        >
+                            &times;
+                        </p>
+                    </div>
+                    <div style="padding: 10px 30px !important">
+                        <button class="btn btn-sm btn__open--modal">
+                            Add New Line
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table__footer">
+                    <div class="document-footer">
+                        <p>Terms and Conditions</p>
+                        <textarea
+                            cols="50"
+                            rows="7"
+                            class="textarea"
+                        ></textarea>
+                    </div>
+                    <div>
+                        <div class="table__footer--subtotal">
+                            <p>Sub Total</p>
+                            <span>$ 1000</span>
+                        </div>
+                        <div class="table__footer--discount">
+                            <p>Discount</p>
+                            <input type="text" class="input" />
+                        </div>
+                        <div class="table__footer--total">
+                            <p>Grand Total</p>
+                            <span>$ 1200</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card__header" style="margin-top: 40px">
+                <div></div>
+                <div>
+                    <a class="btn btn-secondary"> Save </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
