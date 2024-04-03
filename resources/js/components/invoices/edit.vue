@@ -6,6 +6,9 @@ const router = useRouter();
 let form = ref({ id: "" });
 let allcustomers = ref([]);
 let customer_id = ref([]);
+const showModal = ref(false);
+const hideModal = ref(true);
+let listproducts = ref([]);
 
 const props = defineProps({
     id: {
@@ -18,8 +21,9 @@ onMounted(async () => {
     //indexForm();
     getAllCustomers();
     deleteInvoiceItem();
-    // SubTotal();
-    // Total();
+    getproducts();
+    SubTotal();
+    Total();
 });
 
 const getInvoice = async () => {
@@ -34,9 +38,58 @@ const getAllCustomers = async () => {
 };
 
 const deleteInvoiceItem = (id, i) => {
-    form.value.invoice_items.splice(i, 1);
-    if (id != undefined) {
-        axios.get("/api/delete_invoice_items/" + id);
+    if (id > 0) {
+        form.value.invoice_items.splice(i, 1);
+        if (id != undefined) {
+            axios.get("/api/delete_invoice_items/" + id);
+        }
+    }
+};
+
+const addCart = (item) => {
+    const itemcart = {
+        product_id: item.id,
+        item_code: item.item_code,
+        description: item.description,
+        unit_price: item.unit_price,
+        quantity: item.quantity,
+    };
+    //listCart.value.push(itemcart);
+    form.value.invoice_items.push(itemcart);
+    closeModal();
+};
+
+const openModel = () => {
+    showModal.value = !showModal.value;
+};
+
+const closeModal = () => {
+    showModal.value = !hideModal.value;
+};
+
+const getproducts = async () => {
+    let response = await axios.get("/api/products");
+    listproducts.value = response.data.products;
+};
+
+const SubTotal = () => {
+    let total = 0;
+    if (form.value.invoice_items) {
+        form.value.invoice_items.map((data) => {
+            total = total + data.quantity * data.unit_price;
+        });
+    }
+    return total;
+};
+const Total = () => {
+    if (form.value.invoice_items) {
+        return SubTotal() - form.value.discount;
+    }
+};
+
+const onEdit = (id) => {
+    if (form.value.invoice_items.length >= 1) {
+        alert(JSON.stringify(form.value.invoice_items));
     }
 };
 </script>
@@ -150,7 +203,10 @@ const deleteInvoiceItem = (id, i) => {
                         </p>
                     </div>
                     <div style="padding: 10px 30px !important">
-                        <button class="btn btn-sm btn__open--modal">
+                        <button
+                            class="btn btn-sm btn__open--modal"
+                            @click="openModel()"
+                        >
                             Add New Line
                         </button>
                     </div>
@@ -163,20 +219,25 @@ const deleteInvoiceItem = (id, i) => {
                             cols="50"
                             rows="7"
                             class="textarea"
+                            v-model="form.terms_and_conditions"
                         ></textarea>
                     </div>
                     <div>
                         <div class="table__footer--subtotal">
                             <p>Sub Total</p>
-                            <span>$ 1000</span>
+                            <span>$ {{ SubTotal() }}</span>
                         </div>
                         <div class="table__footer--discount">
                             <p>Discount</p>
-                            <input type="text" class="input" />
+                            <input
+                                type="text"
+                                class="input"
+                                v-model="form.discount"
+                            />
                         </div>
-                        <div class="table__footer--total">
+                        <div class="table__footer-- total">
                             <p>Grand Total</p>
-                            <span>$ 1200</span>
+                            <span>$ {{ Total() }}</span>
                         </div>
                     </div>
                 </div>
@@ -184,7 +245,64 @@ const deleteInvoiceItem = (id, i) => {
             <div class="card__header" style="margin-top: 40px">
                 <div></div>
                 <div>
-                    <a class="btn btn-secondary"> Save </a>
+                    <a class="btn btn-secondary" @click="onEdit(form.id)">
+                        Save
+                    </a>
+                </div>
+            </div>
+        </div>
+        <!--==================== add modal items ====================-->
+        <div class="modal main__modal" :class="{ show: showModal }">
+            <div class="modal__content">
+                <span
+                    class="modal__close btn__close--modal"
+                    @click="closeModal()"
+                    >×</span
+                >
+                <h3 class="modal__title">Add Item</h3>
+                <hr />
+                <br />
+                <div class="modal__items">
+                    <ul style="list-style: none">
+                        <li
+                            v-for="(item, i) in listproducts"
+                            :key="item.id"
+                            style="
+                                display: grid;
+                                grid-template-columns: 30px 350px 15px;
+                                align-items: center;
+                                padding-bottom: 5px;
+                            "
+                        >
+                            <p>{{ i + 1 }}</p>
+                            <a href="#"
+                                >{{ item.item_code }} {{ item.description }}</a
+                            >
+                            <button
+                                @click="addCart(item)"
+                                style="
+                                    border: 1px solid #e0e0e0;
+                                    width: 35px;
+                                    cursor: pointer;
+                                "
+                            >
+                                +
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+                <br />
+                <hr />
+                <div class="model__footer">
+                    <button
+                        class="btn btn-light mr-2 btn__close--modal"
+                        @click="closeModal()"
+                    >
+                        Cancel
+                    </button>
+                    <button class="btn btn-light btn__close--modal">
+                        Save
+                    </button>
                 </div>
             </div>
         </div>
