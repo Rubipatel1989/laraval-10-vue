@@ -30,6 +30,7 @@
 
 # npm run dev 
 # for swagger check this video https://www.youtube.com/watch?v=PP1vxV0IGVM
-php artisan l5-swagger:generate
+# php artisan l5-swagger:generate
+# Swagger url - http://127.0.0.1:8000/api/documentation
 
 9.27:18
