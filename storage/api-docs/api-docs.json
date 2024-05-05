@@ -1,0 +1,55 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Open API Swagger Implement in Invoice Project",
+        "description": "Test in invoice project",
+        "contact": {
+            "email": "pawankumar@gmail.com"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0"
+    },
+    "paths": {
+        "/api/get_all_invoice": {
+            "get": {
+                "tags": [
+                    "Get All Invoice"
+                ],
+                "summary": "Finds All Invoices",
+                "description": "No need any parameter",
+                "operationId": "get_all_invoice",
+                "responses": {
+                    "401": {
+                        "description": "Invalid status value"
+                    }
+                }
+            }
+        },
+        "/api/search_invoice": {
+            "get": {
+                "tags": [
+                    "Search Invoice"
+                ],
+                "summary": "Search Invoice with id",
+                "description": "s",
+                "operationId": "search_invoice",
+                "parameters": [
+                    {
+                        "name": "s",
+                        "in": "query",
+                        "description": "display that id data. If not provided then give all data",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "401": {
+                        "description": "Invalid status value"
+                    }
+                }
+            }
+        }
+    }
+}

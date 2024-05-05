@@ -9,12 +9,46 @@ use App\Models\Counter;
 
 class InvoiceController extends Controller
 {
+     /**
+     * @OA\Get(
+     *     path="/api/get_all_invoice",
+     *     tags={"Get All Invoice"},
+     *     summary="Finds All Invoices",
+     *     description="No need any parameter",
+     *     operationId="get_all_invoice",     *     *     
+     *     @OA\Response(
+     *         response=401,
+     *         description="Invalid status value"
+     *     ),   
+     * )
+     */
+
     public function get_all_invoice(){
         $invoices = Invoice::with('customer')->orderBy('id', 'DESC')->get();
         return response()->json([
             'invoices' => $invoices
         ],200);
     }
+
+      /**
+     * @OA\Get(
+     *     path="/api/search_invoice",
+     *     tags={"Search Invoice"},
+     *     summary="Search Invoice with id",
+     *     description="s",
+     *     operationId="search_invoice",
+     *     @OA\Parameter(
+     *         name="s",
+     *         in="query",
+     *         description="display that id data. If not provided then give all data",
+     *         required=true
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Invalid status value"
+     *     ),   
+     * )
+     */
 
     public function search_invoice(Request $request){
         $search = $request->get('s');

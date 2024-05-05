@@ -1,3 +1,5 @@
+# https://www.youtube.com/watch?v=_MZ1B5F2PFc
+
 # laraval-10-vue
 # composer create laravel/laravel laraval-10-vue
 # php artisan serve
@@ -27,6 +29,7 @@
 # npm install @vitejs/plugin-vue
 
 # npm run dev 
-
+# for swagger check this video https://www.youtube.com/watch?v=PP1vxV0IGVM
+php artisan l5-swagger:generate
 
 9.27:18
