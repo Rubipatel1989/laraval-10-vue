@@ -12,8 +12,8 @@ class InvoiceController extends Controller
      /**
      * @OA\Get(
      *     path="/api/get_all_invoice",
-     *     tags={"Get All Invoice"},
-     *     summary="Finds All Invoices",
+     *     tags={"Get All Data Pawan"},
+     *     summary="Finds All Data",
      *     description="No need any parameter",
      *     operationId="get_all_invoice",     *     *     
      *     @OA\Response(

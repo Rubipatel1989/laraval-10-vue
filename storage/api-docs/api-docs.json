@@ -16,9 +16,9 @@
         "/api/get_all_invoice": {
             "get": {
                 "tags": [
-                    "Get All Invoice"
+                    "Get All Data Pawan"
                 ],
-                "summary": "Finds All Invoices",
+                "summary": "Finds All Data",
                 "description": "No need any parameter",
                 "operationId": "get_all_invoice",
                 "responses": {
